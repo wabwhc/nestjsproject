@@ -6,10 +6,10 @@ import { ReplyDto } from './dto/reply.dto';
 export class RepliesController {
     constructor( private repliesService: RepliesService){}
 
-    @Post()
-    createBoard(@Body() replyDto: ReplyDto){
-        return this.repliesService.createReply(replyDto)
-    }
+    // @Post()
+    // createBoard(@Body() replyDto: ReplyDto){
+    //     return this.repliesService.createReply(replyDto)
+    // }
 
     // @Post("reply")
     // getBoard(@Body() boardId: {boardId: number}){

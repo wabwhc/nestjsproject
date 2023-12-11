@@ -6,6 +6,7 @@ import Login from './Login';
 import { useEffect, useState } from 'react';
 import { getCookie } from './Cookie';
 import Create from './Create';
+import Edit from './Edit';
 
 const isLogin = async(setUser,setIsLog) => {
   return  await fetch('http://localhost:3000/auth/authenticate',{
@@ -41,9 +42,10 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Main isLog={isLog} user={user}/>} />
+          <Route path='/' element={<Main isLog={isLog} user={user} setUser={setUser} setIsLog={setIsLog} />} />
           <Route path='/login' element={<Login setUser={setUser} setIsLog={setIsLog} />} />
           <Route path='/create' element={<Create isLog={isLog} user={user} />} />
+          <Route path='/edit/*' element={<Edit isLog={isLog} user={user} />} />
           <Route path='/*' element={<Detail user={user} setUser={setUser} />} />
         </Routes>
       </BrowserRouter>

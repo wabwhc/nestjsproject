@@ -10,6 +10,8 @@ import { User } from 'src/users/entity/users.entity';
 import { BoardsService } from 'src/boards/boards.service';
 import { BoardsModule } from 'src/boards/boards.module';
 import { Board } from 'src/boards/entity/boards.entity';
+import { RepliesService } from 'src/replies/replies.service';
+import { Reply } from 'src/replies/entity/replies.entity';
 
 @Module({
   imports: [
@@ -19,10 +21,11 @@ import { Board } from 'src/boards/entity/boards.entity';
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([Board])
+    TypeOrmModule.forFeature([Board]),
+    TypeOrmModule.forFeature([Reply]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtModule, JwtStrategy, BoardsService],
+  providers: [AuthService, JwtModule, JwtStrategy, BoardsService, RepliesService],
   exports: []
 })
 export class AuthModule {}

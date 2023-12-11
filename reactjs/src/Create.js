@@ -32,6 +32,7 @@ function Create(props) {
     <div className="Main">
       <input placeholder='title' ref={titleRef} />
       <input placeholder='content' ref={contentRef} />
+
       <button onClick={async() => {
         if(isLog){
             await createBoard(titleRef.current.value, contentRef.current.value)

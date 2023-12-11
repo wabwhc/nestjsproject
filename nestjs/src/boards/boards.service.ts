@@ -4,6 +4,7 @@ import { Board } from './entity/boards.entity';
 import { Repository } from 'typeorm';
 import { ListedBoardDto } from './dto/listed-board.dto';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { title } from 'process';
 
 @Injectable()
 export class BoardsService {
@@ -39,6 +40,13 @@ export class BoardsService {
         const board = await this.getOneBoardById(boardId)
         if(board.user === useremail){
             return await this.boardsRepository.delete(boardId)
+        }
+    }
+
+    async editBoard(boardId: number, content: string, title:string, useremail: string){
+        const board = await this.getOneBoardById(boardId)
+        if(board.user === useremail){
+            return await this.boardsRepository.update({id: boardId}, {content: content, title: title})
         }
     }
 }

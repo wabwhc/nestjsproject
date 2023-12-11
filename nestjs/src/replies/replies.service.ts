@@ -11,9 +11,9 @@ export class RepliesService {
         @InjectRepository(Reply) private repliesRepository: Repository<Reply>,
     ){}
 
-    async createReply(replyDto: ReplyDto): Promise<ReplyDto>{
+    async createReply(replyDto: ReplyDto, useremail: string): Promise<ReplyDto>{
        
-        return await this.repliesRepository.save({ user: replyDto.user, content: replyDto.content, boardId: replyDto.boardId });
+        return await this.repliesRepository.save({ user: useremail, content: replyDto.content, boardId: replyDto.boardId });
     }
 
     // async getReply(inputboardId: {boardId: number}): Promise<Reply[]>{

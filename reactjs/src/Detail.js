@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getCookie } from './Cookie';
 
@@ -15,6 +15,8 @@ const baord = async(test, id, navi) => {
     .then(res => {
 
       console.log(res)
+      const dateObject = new Date(res.time)
+      res.time = dateObject.toLocaleString('ko-kr')
       test(res)
     }).catch(() => {
         console.log(
@@ -47,6 +49,22 @@ const deleteBoard = async(id) => {
   })
 }
 
+const createReply = async(content, boardId) => {
+  await fetch('http://127.0.0.1:3000/auth/reply/create', {
+    method: 'post',
+    headers: {
+      "Content-Type" : "application/json",
+      Authorization: "Bearer " + getCookie('token')
+    },
+    body: JSON.stringify(
+      {
+        boardId: boardId,
+        content, content
+      }
+    )
+  })
+}
+
 function Detail(props) {
     const { pathname } = useLocation()
     const [detail, setDetail] = useState({
@@ -59,11 +77,13 @@ function Detail(props) {
     const [replies, setReplies] = useState([])
     const navi = useNavigate()
     const { user } = props
+    const replyRef = useRef()
 
     useEffect(() => {
         async function getboad(){
           await baord(setDetail, pathname.slice(1), navi)
           await getReply(setReplies, pathname.slice(1))
+
         }
         getboad()
     }, []);
@@ -79,19 +99,52 @@ function Detail(props) {
             window.alert('작성자만 삭제 가능합니다.')
           }
         }}>Delete</button>
-        <div>{detail.title}</div>
-        <div>{detail.time}</div>
-        <div>{detail.user}</div>
-        <div>{detail.content}</div>
-        <div>=======================</div>
-        {
-          replies.length === 0 ? <div>댓글없음</div> : 
-          replies.map((reply) => {
-            return <div>
-              <a>{reply.content}:{reply.user}</a>
-            </div>
-          })
-        }
+        <button onClick={() => {
+          if(user === detail.user){
+            navi('/edit/' + pathname.slice(1))
+          }else{
+            window.alert('작성자만 수정 가능합니다.')
+          }
+        }}>Edit</button>
+        <div style={{height: "20px"}}/>
+        <div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>제목: </div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>{detail.title}</div>
+        </div>
+        <div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>날짜: </div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>{detail.time}</div>
+        </div>
+        <div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>작성자: </div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>{detail.user}</div>
+        </div>
+        <div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>내용: </div>
+          <div style={{display: 'inline', marginLeft: '6px'}}>{detail.content}</div>
+        </div>
+        <div style={{marginTop: '10px', marginBottom: '10px'}}>=================================</div>
+        <input style={{textAlign: 'center'}} placeholder='댓글' ref={replyRef} />
+        <button onClick={async() => {
+          await createReply(replyRef.current.value, pathname.slice(1))
+          getReply(setReplies, pathname.slice(1))
+        }}>댓글 입력</button>
+        <table style={{width: '30%', margin: 'auto'}}>
+          <tr>
+            <th scope='col'>내용</th>
+            <th scope='col'>작성자</th>
+          </tr>
+          {
+            replies.length === 0 ? <div>댓글없음</div> : 
+            replies.map((reply) => {
+              return <tr>
+                <td>{reply.content}</td>
+                <td>{reply.user}</td>
+              </tr>
+            })
+          }
+        </table>
+        
       </div>
     );
 }
